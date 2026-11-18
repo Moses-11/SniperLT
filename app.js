@@ -22,7 +22,7 @@ function analyse(values){
   const momentumUp=values[last]>values[last-1];
   const bullish=[trendUp,macdUp,currentRsi>50&&currentRsi<70,momentumUp].filter(Boolean).length;
   const bearish=[!trendUp,!macdUp,currentRsi<50&&currentRsi>30,!momentumUp].filter(Boolean).length;
-  const direction=bullish>bearish?'CALL':bearish>bullish?'PUT':'WAIT';
+  const direction=bullish>bearish?'BUY':bearish>bullish?'SELL':'WAIT';
   const alignment=Math.max(bullish,bearish);
   const score=direction==='WAIT'?50:Math.round(50+(alignment/4)*45);
   const reasons=[
