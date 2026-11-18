@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SniperLT | AI Trading Assistant</title>
+<style>
+:root{
+  --bg:#070a09;--panel:#101613;--panel2:#151e18;--line:#26352b;
+  --green:#39ff14;--green2:#a6ff8f;--orange:#ff8a00;--text:#edf5ed;
+  --muted:#91a095;--red:#ff5757;--shadow:0 12px 35px rgba(0,0,0,.35)
+}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#142219 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.5 Inter,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:1200px;margin:auto;padding:22px}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 0 24px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(145deg,var(--green),#138d0a);display:grid;place-items:center;color:#071006;font-weight:1000;font-size:23px;box-shadow:0 0 22px #39ff1444}
+h1{margin:0;font-size:25px;letter-spacing:1.4px}h1 span{color:var(--green)}.tag{color:var(--muted);font-size:12px;letter-spacing:2px}
+.status{display:flex;align-items:center;gap:8px;color:var(--green2);font-size:12px;border:1px solid #315b32;background:#102014;padding:8px 12px;border-radius:30px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 9px var(--green)}
+.notice{margin:18px 0;padding:11px 14px;border:1px solid #65451f;background:#21170b;color:#ffc47b;border-radius:10px;font-size:12px}
+.grid{display:grid;grid-template-columns:1.05fr 1.5fr;gap:18px;margin-top:18px}.panel{background:linear-gradient(160deg,#121a15,#0d120f);border:1px solid var(--line);border-radius:16px;padding:19px;box-shadow:var(--shadow)}
+.panel h2{font-size:14px;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 17px;color:var(--green2)}
+.field{margin:13px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+input,select,textarea{width:100%;background:#080d0a;border:1px solid #2c3b30;color:var(--text);padding:11px 12px;border-radius:9px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 2px #39ff1420}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.range-row{display:flex;align-items:center;gap:12px}.range-row input{padding:0;accent-color:var(--green)}.range-value{color:var(--orange);font-weight:800;min-width:45px;text-align:right}
+textarea{min-height:120px;resize:vertical;font-family:ui-monospace,monospace;font-size:12px}
+.hint{font-size:11px;color:var(--muted);margin-top:6px}
+.primary{width:100%;border:0;border-radius:10px;padding:13px 16px;background:linear-gradient(90deg,var(--green),#9dff55);color:#071006;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-top:12px;box-shadow:0 5px 20px #39ff1425}
+.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}.secondary{border:1px solid var(--line);background:#151e18;color:var(--text);border-radius:9px;padding:9px 12px}
+.result-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.pill{font-size:10px;color:var(--orange);border:1px solid #75491d;background:#241707;padding:5px 9px;border-radius:30px}
+.signal{margin:16px 0;padding:22px;border:1px solid #2f5630;border-radius:14px;background:radial-gradient(circle at 85% 0%,#1b3b1c 0,transparent 40%),#0b120d;text-align:center}
+.signal .eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted)}.direction{font-size:38px;font-weight:1000;letter-spacing:2px;color:var(--green);margin:3px 0}.direction.put{color:var(--orange)}.signal-sub{font-size:12px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:13px}.metric{background:#0a100c;border:1px solid var(--line);border-radius:10px;padding:12px}.metric small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px}.metric strong{display:block;margin-top:5px;font-size:18px}
+.reason{font-size:12px;color:#c4d0c7;line-height:1.7;margin-top:13px}.reason b{color:var(--green2)}
+.empty{padding:35px 10px;text-align:center;color:var(--muted)}.empty .cross{font-size:30px;color:#46634a}
+.history{margin-top:18px}.history-head{display:flex;justify-content:space-between;align-items:center}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:1px}.buy{color:var(--green)}.sell{color:var(--orange)}.wait{color:var(--muted)}
+.footer{text-align:center;color:#657269;font-size:11px;padding:25px 0 10px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.app{padding:14px}.status{font-size:10px}h1{font-size:21px}}
+@media(max-width:420px){.two{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.metrics .metric:last-child{grid-column:span 2}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">S</div><div><h1>SNIPER<span>LT</span></h1><div class="tag">PRECISION • DISCIPLINE • CONTROL</div></div></div>
+  <div class="status"><span class="dot"></span> LOCAL ANALYSIS MODE</div>
+</header>
+
+<div class="notice"><b>DEMO / MANUAL DATA MODE:</b> SniperLT analyses candle closing prices that you provide. It is not connected to Pocket Option or a live market feed, and its confidence score is a technical-strength estimate—not a proven win probability.</div>
+
+<div class="grid">
+<section class="panel">
+  <h2>01 / Trade configuration</h2>
+  <div class="two">
+    <div class="field"><label for="market">Market group</label><select id="market"><option>OTC</option><option>ALL</option></select></div>
+    <div class="field"><label for="asset">Trading asset</label><select id="asset"><option>EUR/USD OTC</option><option>GBP/USD OTC</option><option>USD/JPY OTC</option><option>AUD/USD OTC</option><option>EUR/JPY OTC</option><option>BTC/USD</option><option>EUR/USD</option><option>GBP/JPY</option><option>GOLD</option></select></div>
+  </div>
+  <div class="two">
+    <div class="field"><label for="timeframe">Candle timeframe</label><select id="timeframe"><option value="1m">1 minute</option><option value="5m">5 minutes</option><option value="15m">15 minutes</option><option value="30s">30 seconds</option></select></div>
+    <div class="field"><label for="stake">Stake amount ($)</label><input id="stake" type="number" min="0.1" step="0.1" value="5"></div>
+  </div>
+  <div class="field"><label for="threshold">Minimum technical-strength score</label><div class="range-row"><input id="threshold" type="range" min="50" max="95" step="1" value="85"><span class="range-value" id="thresholdValue">85%</span></div></div>
+  <div class="field"><label for="prices">Recent candle closing prices (oldest → newest)</label><textarea id="prices" placeholder="Example:&#10;1.08420&#10;1.08435&#10;1.08410&#10;1.08455&#10;1.08470"></textarea><div class="hint">Enter at least 30 numeric closing prices, one per line or separated by commas. Use real data from the same asset and timeframe.</div></div>
+  <button class="primary" id="analyse">Analyse market &amp; generate signal</button>
+  <div class="hint">No trade is placed. Review the analysis and make your own decision.</div>
+</section>
+
+<section class="panel">
+  <div class="result-top"><h2>02 / Signal intelligence</h2><span class="pill" id="signalState">AWAITING DATA</span></div>
+  <div id="result">
+    <div class="empty"><div class="cross">⌖</div><b>NO ACTIVE SIGNAL</b><p>Submit at least 30 closing prices to run the technical analysis engine.</p></div>
+  </div>
+</section>
+</div>
+
+<section class="panel history">
+  <div class="history-head"><h2>03 / Signal history</h2><button class="secondary" id="clear">Clear history</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Time</th><th>Asset</th><th>Direction</th><th>Score</th><th>Stake</th><th>Timeframe</th></tr></thead><tbody id="historyBody"><tr><td colspan="6" class="wait">No analyses yet.</td></tr></tbody></table></div>
+</section>
+<div class="footer">SNIPERLT • TECHNICAL ANALYSIS PROTOTYPE • TRADE RESPONSIBLY</div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+$('threshold').addEventListener('input',()=> $('thresholdValue').textContent=$('threshold').value+'%');
+function ema(values, period){
+  const k=2/(period+1); let out=[values[0]];
+  for(let i=1;i<values.length;i++) out.push(values[i]*k+out[i-1]*(1-k));
+  return out;
+}
+function rsi(values, period=14){
+  let gains=0,losses=0;
+  for(let i=values.length-period;i<values.length;i++){
+    const d=values[i]-values[i-1]; if(d>0) gains+=d; else losses-=d;
+  }
+  if(losses===0) return 100;
+  const rs=(gains/period)/(losses/period); return 100-(100/(1+rs));
+}
+function analyse(values){
+  const fast=ema(values,9), slow=ema(values,21);
+  const macdLine=fast.map((v,i)=>v-slow[i]);
+  const signalLine=ema(macdLine,9);
+  const last=values.length-1, currentRsi=rsi(values);
+  const trendUp=fast[last]>slow[last], macdUp=macdLine[last]>signalLine[last];
+  const momentumUp=values[last]>values[last-1];
+  const bullish=[trendUp,macdUp,currentRsi>50&&currentRsi<70,momentumUp].filter(Boolean).length;
+  const bearish=[!trendUp,!macdUp,currentRsi<50&&currentRsi>30,!momentumUp].filter(Boolean).length;
+  const direction=bullish>bearish?'CALL':bearish>bullish?'PUT':'WAIT';
+  const alignment=Math.max(bullish,bearish);
+  const score=direction==='WAIT'?50:Math.round(50+(alignment/4)*45);
+  const reasons=[
+    `EMA 9 vs EMA 21: ${trendUp?'short-term trend is bullish': 'short-term trend is bearish'}.`,
+    `MACD: ${macdUp?'momentum is positive':'momentum is negative'} relative to its signal line.`,
+    `RSI(14): ${currentRsi.toFixed(1)} — ${currentRsi>=70?'potentially overbought':currentRsi<=30?'potentially oversold':currentRsi>50?'above the midpoint':'below the midpoint'}.`,
+    `Latest candle: ${momentumUp?'closed higher':'closed lower'} than the previous close.`
+  ];
+  return {direction,score,currentRsi,trendUp,macdUp,reasons};
+}
+function addHistory(data){
+  const row=document.createElement('tr');
+  const cls=data.direction==='CALL'?'buy':data.direction==='PUT'?'sell':'wait';
+  [new Date().toLocaleTimeString(),data.asset,data.direction,data.score+'%', '$'+data.stake,data.timeframe].forEach((v,i)=>{
+    const td=document.createElement('td');td.textContent=v;if(i===2)td.className=cls;row.appendChild(td);
+  });
+  if($('historyBody').querySelector('.wait')) $('historyBody').innerHTML='';
+  $('historyBody').prepend(row);
+}
+$('analyse').addEventListener('click',()=>{
+  const raw=$('prices').value.trim();
+  const values=raw.split(/[\s,;]+/).filter(Boolean).map(Number);
+  if(values.length<30 || values.some(v=>!Number.isFinite(v)||v<=0)){
+    alert('Enter at least 30 valid positive closing prices. Separate them with commas or new lines.');return;
+  }
+  const stake=Number($('stake').value);
+  if(!Number.isFinite(stake)||stake<=0){alert('Enter a valid stake amount.');return;}
+  const a=analyse(values), threshold=Number($('threshold').value);
+  const qualifies=a.direction!=='WAIT'&&a.score>=threshold;
+  const asset=$('asset').value, timeframe=$('timeframe').value;
+  $('signalState').textContent=qualifies?'SIGNAL QUALIFIED':a.direction==='WAIT'?'NO CLEAR EDGE':'BELOW THRESHOLD';
+  const direction=qualifies?a.direction:'WAIT';
+  const title=direction==='CALL'?'CALL':direction==='PUT'?'PUT':'WAIT';
+  const reasons=a.reasons.map(r=>'<div>• '+r+'</div>').join('');
+  $('result').innerHTML=`
+    <div class="signal">
+      <div class="eyebrow">${asset} • ${timeframe} • ${$('market').value}</div>
+      <div class="direction ${direction==='PUT'?'put':''}">${title}</div>
+      <div class="signal-sub">${qualifies?'Technical conditions meet your selected threshold.':'No qualified entry. Wait for clearer conditions.'}</div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><small>Strength score</small><strong>${a.score}%</strong></div>
+      <div class="metric"><small>RSI (14)</small><strong>${a.currentRsi.toFixed(1)}</strong></div>
+      <div class="metric"><small>Configured stake</small><strong>$${stake.toFixed(2)}</strong></div>
+    </div>
+    <div class="reason"><b>Indicator breakdown</b>${reasons}<p>Score measures agreement among four simple indicators. It is not a probability of winning and has not been calibrated through backtesting.</p></div>`;
+  addHistory({asset,direction,score:a.score,stake:stake.toFixed(2),timeframe});
+});
+$('clear').addEventListener('click',()=>{$('historyBody').innerHTML='<tr><td colspan="6" class="wait">No analyses yet.</td></tr>';});
+$('market').addEventListener('change',()=>{
+  const otc=$('market').value==='OTC';
+  $('asset').value=otc?'EUR/USD OTC':'EUR/USD';
+});
+</script>
+</body>
+</html>
