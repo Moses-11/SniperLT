@@ -45,8 +45,8 @@ function addHistory(data){
 $('analyse').addEventListener('click',()=>{
   const raw=$('prices').value.trim();
   const values=raw.split(/[\s,;]+/).filter(Boolean).map(Number);
-  if(values.length<30 || values.some(v=>!Number.isFinite(v)||v<=0)){
-    alert('Enter at least 30 valid positive closing prices. Separate them with commas or new lines.');return;
+  if(values.length<3 || values.some(v=>!Number.isFinite(v)||v<=0)){
+    alert('Enter at least 3 valid positive closing prices. Separate them with commas or new lines.');return;
   }
   const stake=Number($('stake').value);
   if(!Number.isFinite(stake)||stake<=0){alert('Enter a valid stake amount.');return;}
