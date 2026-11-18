@@ -35,7 +35,7 @@ function analyse(values){
 }
 function addHistory(data){
   const row=document.createElement('tr');
-  const cls=data.direction==='CALL'?'buy':data.direction==='PUT'?'sell':'wait';
+  const cls=data.direction==='BUY'?'buy':data.direction==='SELL'?'sell':'wait';
   [new Date().toLocaleTimeString(),data.asset,data.direction,data.score+'%', '$'+data.stake,data.timeframe].forEach((v,i)=>{
     const td=document.createElement('td');td.textContent=v;if(i===2)td.className=cls;row.appendChild(td);
   });
@@ -55,12 +55,12 @@ $('analyse').addEventListener('click',()=>{
   const asset=$('asset').value, timeframe=$('timeframe').value;
   $('signalState').textContent=qualifies?'SIGNAL QUALIFIED':a.direction==='WAIT'?'NO CLEAR EDGE':'BELOW THRESHOLD';
   const direction=qualifies?a.direction:'WAIT';
-  const title=direction==='CALL'?'CALL':direction==='PUT'?'PUT':'WAIT';
+  const title=direction==='BUY'?'BUY':direction==='SELL'?'SELL':'WAIT';
   const reasons=a.reasons.map(r=>'<div>• '+r+'</div>').join('');
   $('result').innerHTML=`
     <div class="signal">
       <div class="eyebrow">${asset} • ${timeframe} • ${$('market').value}</div>
-      <div class="direction ${direction==='PUT'?'put':''}">${title}</div>
+      <div class="direction ${direction==='SELL'?'sell':''}">${title}</div>
       <div class="signal-sub">${qualifies?'Technical conditions meet your selected threshold.':'No qualified entry. Wait for clearer conditions.'}</div>
     </div>
     <div class="metrics">
